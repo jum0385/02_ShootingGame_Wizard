@@ -83,7 +83,6 @@ public class GameManager : MonoBehaviour
 
     void CreateMagicCircle(GameObject monster)
     {
-        Debug.Log("create!!!");
         // Instantiate( 생성할 객체, 위치 값, 회전 값 )
         Vector3 height = new Vector3(0, 0.1f, 0);
         Vector3 circlePositoin =  monster.transform.position;

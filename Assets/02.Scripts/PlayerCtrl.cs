@@ -63,9 +63,12 @@ public class PlayerCtrl : MonoBehaviour
     // 물리적 처리
     void FixedUpdate()
     {
-        Vector3 dir = (Vector3.forward * v) + (Vector3.right * h);
-        tr.Translate(dir.normalized * Time.deltaTime * moveSpeed, Space.Self);
-        tr.Rotate(Vector3.up * Time.smoothDeltaTime * turnSpeed * r);
+        transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed * v);
+        transform.Rotate(Vector3.up * Time.deltaTime * 150.0f * h);
+
+        // Vector3 dir = (Vector3.forward * v) + (Vector3.right * h);
+        // tr.Translate(dir.normalized * Time.deltaTime * moveSpeed, Space.Self);
+        // tr.Rotate(Vector3.up * Time.smoothDeltaTime * turnSpeed * r);
 
         // 회전 버벅거림
         /*
@@ -117,7 +120,7 @@ public class PlayerCtrl : MonoBehaviour
 
     private void OnTriggerEnter(Collider coll)
     {
-        if((currHp > 0.0f) && (coll.CompareTag("PUNCH")))
+        if ((currHp > 0.0f) && (coll.CompareTag("PUNCH")))
         {
             currHp -= 15.0f;
             Debug.Log("Player got hit!!!");
