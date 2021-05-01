@@ -155,6 +155,7 @@ public class MonsterCtrl : MonoBehaviour
 
         //todo 승리 애니메이션
         anim.SetTrigger(hashPlayerDie);
+        
 
     }
 

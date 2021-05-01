@@ -35,6 +35,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     //
 
     private PhotonView pv;
+    public bool playerDie = false;
 
 
     IEnumerator Start()
@@ -70,7 +71,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         h = Input.GetAxis("Horizontal");
         r = Input.GetAxis("Mouse X");
 
-        if (Input.GetMouseButtonDown(1))    // 우측 버튼 클릭 시 -> Jump
+        if (Input.GetMouseButtonDown(1) && !playerDie)    // 우측 버튼 클릭 시 -> Jump
         {
             isJumping = true;
         }
@@ -79,8 +80,8 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     // 물리적 처리
     void FixedUpdate()
     {
-
-        if (pv.IsMine)
+        
+        if (pv.IsMine && !playerDie)
         {
             transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed * v);
             transform.Rotate(Vector3.up * Time.deltaTime * 150.0f * h);
@@ -126,16 +127,17 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
     }
 
-
-    private void OnTriggerEnter(Collider coll)
+    private void OnCollisionEnter(Collision coll)
     {
-        if ((currHp > 0.0f) && (coll.CompareTag("PUNCH")))
+        if (coll.collider.CompareTag("FIREBALL"))
         {
-            currHp -= 15.0f;
-            Debug.Log("Player got hit!!!");
-            if (currHp <= 0.0f)
+            // anim.SetTrigger(hashHit);
+
+            currHp -= 20.0f;
+            if (currHp <= 0 && !playerDie)
             {
                 PlayerDie();
+                // StartCoroutine(DieAction());
             }
         }
     }
@@ -145,12 +147,19 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // Player Die 애니메이션
         anim.SetTrigger(hashDie);
 
-        GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
-        foreach (GameObject monster in monsters)
-        {
-            monster.SendMessage("MonsterWin", SendMessageOptions.DontRequireReceiver);
-        }
+        GetComponent<CapsuleCollider>().enabled = false;
+        GetComponent<Rigidbody>().useGravity = false;
+        playerDie = true;
+
+        // GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
+        // foreach (GameObject monster in monsters)
+        // {
+        //     monster.SendMessage("MonsterWin", SendMessageOptions.DontRequireReceiver);
+        // }
     }
+
+
+
 
 
     // 네트워크를 통해서 수신받을 변수
@@ -177,7 +186,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
 
 
-    
+
 }
 
 

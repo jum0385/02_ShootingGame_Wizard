@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public bool isGameOver = false;
 
     public List<GameObject> monsterPool = new List<GameObject>();
-    public int maxPool = 4;                 //골렘 수
+    private int maxPool = 1;                 //골렘 수
 
     private Transform playerTr;
 
@@ -26,6 +26,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     //
     private PhotonView pv;
+
+    private GameObject monsterTemp;
+
+    public bool playerDie = false;
 
     void Awake()
     {
@@ -42,7 +46,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         //todo 스폰위치
         Vector3 pos = new Vector3(-17.0f, 0, -58.0f);
         // 플레이어 생성
-        PhotonNetwork.Instantiate("Player",pos,Quaternion.identity, 0);
+        PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0);
 
     }
 
@@ -50,7 +54,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         for (int i = 0; i < maxPool; i++)
         {
-            GameObject monster = Instantiate<GameObject>(monsterPrefab);
+            GameObject monster = PhotonNetwork.Instantiate("Monster", Vector3.zero, Quaternion.identity, 0);
+            // GameObject monster = Instantiate<GameObject>(monsterPrefab);
             monster.name = $"Monster_{i:00}";
             monster.SetActive(false);
 
@@ -66,9 +71,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         monsterPrefab = Resources.Load<GameObject>("monster");
 
-        CreatePool();   // monster pool 생성
+        // todo 몬스터 생성
+        // if (PhotonNetwork.IsMasterClient)
+        // {
+        //     Debug.Log($"{PhotonNetwork.NickName} : 방장");
+        //     CreatePool();   // monster pool 생성
+        //     StartCoroutine(GetMonsterInPool());
+        // }
 
-        StartCoroutine(GetMonsterInPool());
     }
 
     IEnumerator GetMonsterInPool()
@@ -81,11 +91,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 if (monster.activeSelf == false)
                 {
-                    int idx = Random.Range(1, points.Count);
-                    monster.transform.position = points[idx].position;
-                    monster.transform.LookAt(playerTr.position);
-                    monster.SetActive(true);
-
+                    monsterTemp = monster;
+                    pv.RPC("ActiveMonster", RpcTarget.AllViaServer);
                     //!
                     CreateMagicCircle(monster);
                     break;
@@ -95,12 +102,24 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    [PunRPC]
+    public void ActiveMonster()
+    {
+        int idx = Random.Range(1, points.Count);
+        monsterTemp.transform.position = points[idx].position;
+        monsterTemp.transform.LookAt(playerTr.position);
+        monsterTemp.SetActive(true);
+
+        Debug.Log($"{PhotonNetwork.NickName} : monster active");
+
+    }
+
     void CreateMagicCircle(GameObject monster)
     {
         // Instantiate( 생성할 객체, 위치 값, 회전 값 )
         Vector3 height = new Vector3(0, 0.1f, 0);
-        Vector3 circlePositoin =  monster.transform.position;
-        GameObject circle = Instantiate(magicCirclePrefab, monster.transform.position + height, monster.transform.rotation);
+        Vector3 circlePositoin = monster.transform.position;
+        GameObject circle = Instantiate(magicCirclePrefab, monster.transform.position + height, monster.transform.rotation, monster.transform);
         // yield return new WaitForSeconds(3.0f);
         Destroy(circle, 3.0f);
     }

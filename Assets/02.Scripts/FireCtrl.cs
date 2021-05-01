@@ -17,11 +17,13 @@ public class FireCtrl : MonoBehaviour
     private Animator anim;
 
     private PhotonView pv;
+    private PlayerCtrl pCtrl;
 
     void Start()
     {
         audio = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
+        pCtrl = GetComponent<PlayerCtrl>();
 
         pv = GetComponent<PhotonView>();
 
@@ -31,7 +33,7 @@ public class FireCtrl : MonoBehaviour
     {
         if (pv.IsMine)
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !pCtrl.playerDie)
             {
                 pv.RPC("Fire", RpcTarget.AllViaServer);
             }
@@ -42,7 +44,15 @@ public class FireCtrl : MonoBehaviour
     [PunRPC]
     void Fire()
     {
-        Instantiate(fireballPrefab, firePos.position, this.transform.rotation);
+        GameObject fireObj = Instantiate(fireballPrefab, firePos.position, this.transform.rotation);
+        if (this.gameObject.layer == 10)
+        {
+            fireObj.layer = 10;
+        }
+        else
+        {
+            fireObj.layer = 11;
+        }
         audio.PlayOneShot(fireSFX, 0.8f);
 
     }
