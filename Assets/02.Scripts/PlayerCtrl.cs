@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Utility;
+using Photon.Pun;
 
-public class PlayerCtrl : MonoBehaviour
+public class PlayerCtrl : MonoBehaviour, IPunObservable
 {
     private float v;
     private float h;
@@ -30,6 +32,10 @@ public class PlayerCtrl : MonoBehaviour
     public float initHp = 100.0f;
     public float currHp = 100.0f;
 
+    //
+
+    private PhotonView pv;
+
 
     IEnumerator Start()
     {
@@ -40,8 +46,18 @@ public class PlayerCtrl : MonoBehaviour
 
         rigid = GetComponent<Rigidbody>();
 
+        pv = GetComponent<PhotonView>();
+
         // player animator \ Apply Root Motion 언체크
 
+        if (pv.IsMine)
+        {
+            Camera.main.GetComponent<SmoothFollow>().target = transform.Find("CamPivot").transform;
+        }
+        else
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
 
         yield return new WaitForSeconds(0.5f);
         turnSpeed = turnSpeedValue;
@@ -63,23 +79,16 @@ public class PlayerCtrl : MonoBehaviour
     // 물리적 처리
     void FixedUpdate()
     {
-        transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed * v);
-        transform.Rotate(Vector3.up * Time.deltaTime * 150.0f * h);
 
-        // Vector3 dir = (Vector3.forward * v) + (Vector3.right * h);
-        // tr.Translate(dir.normalized * Time.deltaTime * moveSpeed, Space.Self);
-        // tr.Rotate(Vector3.up * Time.smoothDeltaTime * turnSpeed * r);
+        if (pv.IsMine)
+        {
+            transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed * v);
+            transform.Rotate(Vector3.up * Time.deltaTime * 150.0f * h);
 
-        // 회전 버벅거림
-        /*
-        Vector3 rot = Vector3.right * r;
-        Vector3 endPosition = tr.position + rot;
-        tr.position = Vector3.Slerp(tr.position, endPosition, Time.fixedDeltaTime  * turnSpeed);
-        */
+            StartCoroutine(PlayerAnimation());
+            Jump();
 
-
-        StartCoroutine(PlayerAnimation());
-        Jump();
+        }
         // Rotation();
 
     }
@@ -143,6 +152,32 @@ public class PlayerCtrl : MonoBehaviour
         }
     }
 
+
+    // 네트워크를 통해서 수신받을 변수
+    Vector3 receivePos = Vector3.zero;
+    Quaternion receiveRot = Quaternion.identity;
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        // 데이터를 보낸다
+        if (stream.IsWriting) // PhotonView.IsMine == ture
+        {
+            stream.SendNext(transform.position); // 위치
+            stream.SendNext(transform.rotation); // 회전값
+
+        }
+        // 내 탱크의 복사본들이 받는 부분
+        else
+        {
+            receivePos = (Vector3)stream.ReceiveNext();
+            receiveRot = (Quaternion)stream.ReceiveNext();
+        }
+    }
+
+
+
+
+    
 }
 
 

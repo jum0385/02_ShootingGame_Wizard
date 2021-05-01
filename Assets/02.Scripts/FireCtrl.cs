@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 [RequireComponent(typeof(AudioSource))]
 public class FireCtrl : MonoBehaviour
@@ -14,20 +16,35 @@ public class FireCtrl : MonoBehaviour
 
     private Animator anim;
 
+    private PhotonView pv;
+
     void Start()
     {
         audio = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
 
+        pv = GetComponent<PhotonView>();
+
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (pv.IsMine)
         {
-            Instantiate(fireballPrefab, firePos.position, this.transform.rotation);
-            audio.PlayOneShot(fireSFX, 0.8f);
+            if (Input.GetMouseButtonDown(0))
+            {
+                pv.RPC("Fire", RpcTarget.AllViaServer);
+            }
+
         }
+    }
+
+    [PunRPC]
+    void Fire()
+    {
+        Instantiate(fireballPrefab, firePos.position, this.transform.rotation);
+        audio.PlayOneShot(fireSFX, 0.8f);
+
     }
 
 }

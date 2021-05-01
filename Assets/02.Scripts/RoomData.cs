@@ -36,7 +36,7 @@ public class RoomData : MonoBehaviour
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 30;
+        ro.MaxPlayers = 4;
 
         PhotonNetwork.JoinOrCreateRoom(roomName, ro, TypedLobby.Default);
     }

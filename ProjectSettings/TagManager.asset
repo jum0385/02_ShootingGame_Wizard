@@ -20,8 +20,8 @@ TagManager:
   - FIREBALL
   - MONSTER_BODY
   - MONSTER_PUNCH
-  - 
-  - 
+  - PLAYER_A
+  - PLAYER_B
   - 
   - 
   - 

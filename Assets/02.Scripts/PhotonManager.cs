@@ -63,7 +63,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 30;
+        ro.MaxPlayers = 4;
 
         roomNameText.text = $"Room_{Random.Range(1, 100):000}";
 
@@ -81,7 +81,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Debug.Log("04. 방 입장 완료");
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel("Desert");
+            PhotonNetwork.LoadLevel("Desert"); //todo 로비->웨이팅룸
         }
     }
 

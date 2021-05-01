@@ -1,8 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using TMPro;
+using UnityEngine.UI;
+using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviourPunCallbacks
 {
     public static GameManager instance = null;
 
@@ -13,12 +18,14 @@ public class GameManager : MonoBehaviour
     public bool isGameOver = false;
 
     public List<GameObject> monsterPool = new List<GameObject>();
-    public int maxPool = 4;                 //!
+    public int maxPool = 4;                 //골렘 수
 
     private Transform playerTr;
 
-    
     public GameObject magicCirclePrefab;
+
+    //
+    private PhotonView pv;
 
     void Awake()
     {
@@ -31,6 +38,12 @@ public class GameManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        //todo 스폰위치
+        Vector3 pos = new Vector3(-17.0f, 0, -58.0f);
+        // 플레이어 생성
+        PhotonNetwork.Instantiate("Player",pos,Quaternion.identity, 0);
+
     }
 
     void CreatePool()
@@ -47,6 +60,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        pv = GetComponent<PhotonView>();
         playerTr = GameObject.FindGameObjectWithTag("PLAYER")?.GetComponent<Transform>();
         GameObject.Find("SpawnPointGroup").GetComponentsInChildren<Transform>(points);
 
@@ -90,6 +104,12 @@ public class GameManager : MonoBehaviour
         // yield return new WaitForSeconds(3.0f);
         Destroy(circle, 3.0f);
     }
+
+
+
+
+    //
+
 
 
 }
