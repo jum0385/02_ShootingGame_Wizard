@@ -29,8 +29,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private GameObject monsterTemp;
 
-    public bool playerDie = false;
-
     void Awake()
     {
         if (instance == null)

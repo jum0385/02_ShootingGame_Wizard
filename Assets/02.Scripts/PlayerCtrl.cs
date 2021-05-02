@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Utility;
 using Photon.Pun;
+using TMPro;
 
 public class PlayerCtrl : MonoBehaviour, IPunObservable
 {
@@ -37,6 +38,9 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     private PhotonView pv;
     public bool playerDie = false;
 
+    
+    public TMP_Text userIdText;
+
 
     IEnumerator Start()
     {
@@ -50,6 +54,9 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         pv = GetComponent<PhotonView>();
 
         // player animator \ Apply Root Motion 언체크
+
+        // UI에 닉네임 넣기
+        userIdText.text = pv.Owner.NickName;
 
         if (pv.IsMine)
         {
