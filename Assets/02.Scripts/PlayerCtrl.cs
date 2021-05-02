@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityStandardAssets.Utility;
+using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 
@@ -39,7 +40,9 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     public bool playerDie = false;
 
     
+    [Header("UI - 닉네임, 체력")]
     public TMP_Text userIdText;
+    public Image hpBar;
 
 
     IEnumerator Start()
@@ -141,6 +144,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
             // anim.SetTrigger(hashHit);
 
             currHp -= 20.0f;
+            hpBar.fillAmount = currHp / initHp;
             if (currHp <= 0 && !playerDie)
             {
                 PlayerDie();
