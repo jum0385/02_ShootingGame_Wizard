@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityStandardAssets.Utility;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 
 public class PlayerCtrl : MonoBehaviour, IPunObservable
@@ -45,6 +46,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     public Image hpBar;
 
 
+
     IEnumerator Start()
     {
         turnSpeed = 0.0f;
@@ -69,6 +71,9 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         {
             GetComponent<Rigidbody>().isKinematic = true;
         }
+
+        // 팀 나누기
+        pv.RPC("SetTeam", RpcTarget.AllViaServer);
 
         yield return new WaitForSeconds(0.5f);
         turnSpeed = turnSpeedValue;
@@ -144,7 +149,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
             // anim.SetTrigger(hashHit);
 
             currHp -= 20.0f;
-            pv.RPC("UpdateHp",RpcTarget.AllViaServer);
+            pv.RPC("UpdateHp", RpcTarget.AllViaServer);
             hpBar.fillAmount = currHp / initHp;
             if (currHp <= 0 && !playerDie)
             {
@@ -177,9 +182,6 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     }
 
 
-
-
-
     // 네트워크를 통해서 수신받을 변수
     Vector3 receivePos = Vector3.zero;
     Quaternion receiveRot = Quaternion.identity;
@@ -200,6 +202,23 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
             receiveRot = (Quaternion)stream.ReceiveNext();
         }
     }
+
+    // 팀나누기
+    [PunRPC]
+    void SetTeam()
+    {
+        Debug.Log(pv.ViewID);
+        if ((pv.ViewID / 1000) % 2 == 0)
+        {
+            gameObject.layer = 11;
+        }
+        else
+        {
+            gameObject.layer = 10;
+        }
+    }
+
+
 
 
 

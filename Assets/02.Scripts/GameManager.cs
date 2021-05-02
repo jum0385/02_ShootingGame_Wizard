@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private GameObject monsterTemp;
 
+
+
     void Awake()
     {
         if (instance == null)
@@ -41,12 +43,15 @@ public class GameManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
         }
 
+
         //todo 스폰위치
         Vector3 pos = new Vector3(-17.0f, 0, -58.0f);
         // 플레이어 생성
-        PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0);
-
+        GameObject playerTemp = PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0);
     }
+
+
+
 
     void CreatePool()
     {
@@ -122,10 +127,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         Destroy(circle, 3.0f);
     }
 
-
-
-
-    //
 
 
 
