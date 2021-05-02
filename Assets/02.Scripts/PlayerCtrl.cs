@@ -39,7 +39,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     private PhotonView pv;
     public bool playerDie = false;
 
-    
+
     [Header("UI - 닉네임, 체력")]
     public TMP_Text userIdText;
     public Image hpBar;
@@ -90,7 +90,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     // 물리적 처리
     void FixedUpdate()
     {
-        
+
         if (pv.IsMine && !playerDie)
         {
             transform.Translate(Vector3.forward * Time.deltaTime * moveSpeed * v);
@@ -144,6 +144,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
             // anim.SetTrigger(hashHit);
 
             currHp -= 20.0f;
+            pv.RPC("UpdateHp",RpcTarget.AllViaServer);
             hpBar.fillAmount = currHp / initHp;
             if (currHp <= 0 && !playerDie)
             {
@@ -151,6 +152,12 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
                 // StartCoroutine(DieAction());
             }
         }
+    }
+
+    [PunRPC]
+    void UpdateHp()
+    {
+        hpBar.fillAmount = currHp / initHp;
     }
 
     void PlayerDie()
