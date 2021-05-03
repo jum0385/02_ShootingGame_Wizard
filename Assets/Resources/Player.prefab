@@ -4497,12 +4497,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 8
   turnSpeed: 0
-  jumpPower: 5
   initHp: 100
   currHp: 100
   playerDie: 0
   userIdText: {fileID: 576276682}
   hpBar: {fileID: 8964743784064553441}
+  teamA_Text: {fileID: 0}
+  teamB_Text: {fileID: 0}
 --- !u!114 &6790262782630585182
 MonoBehaviour:
   m_ObjectHideFlags: 0

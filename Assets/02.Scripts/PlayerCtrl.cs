@@ -16,7 +16,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     [Header("이동 및 회전 속도")]
     public float moveSpeed = 8.0f;
     public float turnSpeed = 0.0f;
-    public float jumpPower = 5.0f;
+    private float jumpPower = 5000.0f;
 
     private float turnSpeedValue = 200.0f;
 
@@ -41,9 +41,15 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     public bool playerDie = false;
 
 
-    [Header("UI - 닉네임, 체력")]
+    [Header("플레이어UI - 닉네임, 체력")]
     public TMP_Text userIdText;
     public Image hpBar;
+
+
+    [Header("UI - A팀 : B팀")]
+    public TMP_Text teamA_Text;
+    public TMP_Text teamB_Text;
+
 
 
 
@@ -58,10 +64,27 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
         pv = GetComponent<PhotonView>();
 
+        // 팀 스코어 초기화
+        teamA_Text = GameObject.FindWithTag("SCORE_A").GetComponent<TMP_Text>();
+        teamB_Text = GameObject.FindWithTag("SCORE_B").GetComponent<TMP_Text>();
+
         // player animator \ Apply Root Motion 언체크
 
+        // 팀 나누기
+        pv.RPC("SetTeam", RpcTarget.AllViaServer);
+        SetRoomInfo();
+        
+        yield return new WaitForSeconds(0.5f);
+
         // UI에 닉네임 넣기
-        userIdText.text = pv.Owner.NickName;
+        if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_B"))  // B팀이면 파란색
+        {
+            userIdText.text = $"<color=#00F4FF>{pv.Owner.NickName}</color>";
+        }
+        else if(this.gameObject.layer == LayerMask.NameToLayer("PLAYER_A"))  // A팀이면 분홍색
+        {
+            userIdText.text = $"<color=#FF00A6>{pv.Owner.NickName}</color>";
+        }
 
         if (pv.IsMine)
         {
@@ -72,8 +95,6 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
             GetComponent<Rigidbody>().isKinematic = true;
         }
 
-        // 팀 나누기
-        pv.RPC("SetTeam", RpcTarget.AllViaServer);
 
         yield return new WaitForSeconds(0.5f);
         turnSpeed = turnSpeedValue;
@@ -207,18 +228,40 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     [PunRPC]
     void SetTeam()
     {
-        Debug.Log(pv.ViewID);
+        // B팀
         if ((pv.ViewID / 1000) % 2 == 0)
         {
+            Debug.Log("B팀");
             gameObject.layer = 11;
+            // int temp = int.Parse(teamB_Text.text);
+            // temp ++;
+            // teamB_Text.text = $"{temp}";
         }
+        // A팀
         else
         {
+            Debug.Log("A팀");
             gameObject.layer = 10;
+            // int temp = int.Parse(teamA_Text.text);
+            // temp ++;
+            // teamA_Text.text = $"{temp}";
         }
     }
 
+    // 기본 세팅 N:N
+    void SetRoomInfo()
+    {
+        int temp = (PhotonNetwork.CurrentRoom.PlayerCount) / 2;
+        teamA_Text.text = $"{temp}";
+        teamB_Text.text = $"{temp}";
 
+        // 
+
+
+        // Room currentRoom =  PhotonNetwork.CurrentRoom;
+        // roomNameText.text = currentRoom.Name;
+        // connectInfoText.text = $"{currentRoom.PlayerCount}/{currentRoom.MaxPlayers}";
+    }
 
 
 

@@ -9,6 +9,8 @@ TagManager:
   - PUNCH
   - MONSTER
   - MAGIC_CIRCLE
+  - SCORE_A
+  - SCORE_B
   layers:
   - Default
   - TransparentFX

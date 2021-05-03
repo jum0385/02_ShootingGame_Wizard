@@ -84,6 +84,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
 
+
     IEnumerator GetMonsterInPool()
     {
         while (!isGameOver)
@@ -126,6 +127,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         // yield return new WaitForSeconds(3.0f);
         Destroy(circle, 3.0f);
     }
+
 
 
 
