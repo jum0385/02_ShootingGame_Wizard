@@ -2427,7 +2427,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2516edcba6fec964787b5492b55edbd1, type: 2}
+  - {fileID: 2100000, guid: ba9a2d18e44c0f9459dc26969b234d12, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4503,6 +4503,10 @@ MonoBehaviour:
   userIdText: {fileID: 576276682}
   hpBar: {fileID: 8964743784064553441}
   playerPoints: []
+  textures:
+  - {fileID: 2800000, guid: 5dab8b5d7a5db2b4aacf7b82c82b9e31, type: 3}
+  - {fileID: 2800000, guid: 29c74919c4f112947abae1266a4ec606, type: 3}
+  renderer: {fileID: 0}
 --- !u!114 &6790262782630585182
 MonoBehaviour:
   m_ObjectHideFlags: 0

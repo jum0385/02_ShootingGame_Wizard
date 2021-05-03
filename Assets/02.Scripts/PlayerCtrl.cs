@@ -54,9 +54,12 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
     private TMP_Text result;
 
-
-
     public List<Transform> playerPoints = new List<Transform>();
+
+    
+    [Header("플레이어 옷 텍스쳐")]
+    public Texture[] textures;
+    public new SkinnedMeshRenderer renderer;
 
 
 
@@ -69,6 +72,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
         pv = GetComponent<PhotonView>();
+        renderer = GetComponentInChildren<SkinnedMeshRenderer>();
 
         // 팀 스코어 UI
         teamA_Text = GameObject.FindWithTag("SCORE_A").GetComponent<TMP_Text>();
@@ -78,9 +82,8 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         result = GameObject.FindWithTag("RESULT").GetComponent<TMP_Text>();
         result.enabled = false;
 
-        
+        // 플레이어 스폰 위치 및 방향
         GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
-        // Debug.Log(pv.ViewID/1000);
         Vector3 pos = playerPoints[pv.ViewID/1000].position;
         Quaternion rot = playerPoints[pv.ViewID/1000].rotation;
         tr.position = pos;
@@ -109,7 +112,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         if (pv.IsMine)
         {
             Camera.main.GetComponent<SmoothFollow>().target = transform.Find("CamPivot").transform;
-            //! 델리게이트
+            // 델리게이트
             GameManager.Result_handler += SetResult;
         }
         else
@@ -246,36 +249,6 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // }
     }
 
-    // 죽었으면 Score확인하는 코루틴 돌리자!    
-    /*
-    [PunRPC]
-    IEnumerator CheckScore()
-    {
-        while (!isGameEnd)
-        {
-            if ((teamA_score == 0) || (teamB_score == 0))
-            {
-                // 어떤 팀이 이겼는지 확인
-                if (teamA_score == 0)    // B팀이 이김
-                {
-                    SetResult(11);
-                }
-                else                    // A팀이 이김
-                {
-                    SetResult(10);
-                }
-
-                isGameEnd = true;
-            }
-            yield return new WaitForSeconds(0.3f);
-
-        }
-        // Debug.Log($"{pv.Owner.NickName} : CheckScore 함수");
-        // // 스코어 확인
-
-    }
-
-*/
     // UI에 결과 띄우기
     void SetResult(int winnerLayer)
     {
@@ -324,6 +297,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         if ((pv.ViewID / 1000) % 2 == 0)
         {
             gameObject.layer = 11;
+            renderer.material.mainTexture = textures[1];
             // int temp = int.Parse(teamB_Text.text);
             // temp ++;
             // teamB_Text.text = $"{temp}";
@@ -332,6 +306,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         else
         {
             gameObject.layer = 10;
+            renderer.material.mainTexture = textures[0];
             // int temp = int.Parse(teamA_Text.text);
             // temp ++;
             // teamA_Text.text = $"{temp}";

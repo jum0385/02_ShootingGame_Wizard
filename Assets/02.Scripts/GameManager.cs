@@ -62,8 +62,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         pv = GetComponent<PhotonView>();
 
-        //todo 스폰위치
-
         // GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
         // Debug.Log(pv.ViewID);
         // Vector3 pos = playerPoints[pv.ViewID].position;
