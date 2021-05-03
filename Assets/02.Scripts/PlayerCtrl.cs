@@ -6,8 +6,9 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using UnityEngine.SceneManagement;
 
-public class PlayerCtrl : MonoBehaviour, IPunObservable
+public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 {
     private float v;
     private float h;
@@ -56,7 +57,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
     public List<Transform> playerPoints = new List<Transform>();
 
-    
+
     [Header("플레이어 옷 텍스쳐")]
     public Texture[] textures;
     public new SkinnedMeshRenderer renderer;
@@ -84,8 +85,8 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
         // 플레이어 스폰 위치 및 방향
         GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
-        Vector3 pos = playerPoints[pv.ViewID/1000].position;
-        Quaternion rot = playerPoints[pv.ViewID/1000].rotation;
+        Vector3 pos = playerPoints[pv.ViewID / 1000].position;
+        Quaternion rot = playerPoints[pv.ViewID / 1000].rotation;
         tr.position = pos;
         tr.rotation = rot;
 
@@ -265,6 +266,11 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         }
 
         result.enabled = true;
+        if (pv.IsMine)
+        {
+            // 5초후 로비로 나가기
+            Invoke("ExitRoom", 5.0f);
+        }
     }
 
 
@@ -327,6 +333,21 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // roomNameText.text = currentRoom.Name;
         // connectInfoText.text = $"{currentRoom.PlayerCount}/{currentRoom.MaxPlayers}";
     }
+
+    // 클론을 지우는 등 cleanUp 작업
+    public void ExitRoom()
+    {
+        // PhotonNetwork.LeaveRoom();
+        SceneManager.LoadScene("Lobby");
+    }
+
+    // // CleanUp 끝난 후에 호출되는 콜백
+    // // 이미 로비에 있는 상태이므로 씬만 바꿔주면 됨
+    // public override void OnLeftRoom()
+    // {
+    //     // Lobby 씬으로 되돌아 가기...
+    //     SceneManager.LoadScene("Lobby");
+    // }
 
 
 
