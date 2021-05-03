@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public bool isGameEnd = false;
 
 
-    // [Header("UI - A팀 : B팀")]
+    [Header("UI - A팀 : B팀")]
     public TMP_Text teamA_Text;
     public TMP_Text teamB_Text;
     private int teamA_score;
@@ -45,6 +45,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public static event Callback Result_handler;
 
     public List<Transform> playerPoints = new List<Transform>();
+
+    [Header("UI - A팀 : B팀")]
+    public Image waitingImg;
+    public TMP_Text waitText;
+    public TMP_Text startText;
+
+
 
 
 
@@ -65,6 +72,8 @@ public class GameManager : MonoBehaviourPunCallbacks
         // GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
         // Debug.Log(pv.ViewID);
         // Vector3 pos = playerPoints[pv.ViewID].position;
+
+        startText.enabled = false;
 
         // 플레이어 생성
         GameObject playerTemp = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity, 0);
@@ -181,7 +190,23 @@ public class GameManager : MonoBehaviourPunCallbacks
         Destroy(circle, 3.0f);
     }
 
+    // 풀방인지 체크하고
+    // 풀방이면 게임시작
+    public void CheckFullRoom()
+    {
+        if (PhotonNetwork.CurrentRoom.PlayerCount == PhotonNetwork.CurrentRoom.MaxPlayers)
+        {
+            waitText.enabled = false;
+            waitingImg.enabled = false;
+            startText.enabled = true;
+            Invoke("RemoveStartText", 1.0f);
+        }
+    }
 
+    void RemoveStartText()
+    {
+        startText.enabled = false;
+    }
 
 
 

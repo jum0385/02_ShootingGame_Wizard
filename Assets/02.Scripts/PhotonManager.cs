@@ -63,7 +63,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 4;
+        ro.MaxPlayers = 2;
 
         roomNameText.text = $"Room_{Random.Range(1, 100):000}";
 

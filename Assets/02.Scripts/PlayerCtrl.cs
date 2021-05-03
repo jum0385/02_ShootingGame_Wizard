@@ -120,7 +120,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
             GetComponent<Rigidbody>().isKinematic = true;
         }
 
-
+        GameManager.instance.CheckFullRoom();
 
 
         yield return new WaitForSeconds(0.5f);
