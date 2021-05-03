@@ -81,7 +81,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         Debug.Log("04. 방 입장 완료");
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel("Desert"); //todo 로비->웨이팅룸
+            PhotonNetwork.LoadLevel("Desert"); //todo 로비->웨이팅룸    //씬 전환
         }
     }
 

@@ -4502,6 +4502,7 @@ MonoBehaviour:
   playerDie: 0
   userIdText: {fileID: 576276682}
   hpBar: {fileID: 8964743784064553441}
+  playerPoints: []
 --- !u!114 &6790262782630585182
 MonoBehaviour:
   m_ObjectHideFlags: 0

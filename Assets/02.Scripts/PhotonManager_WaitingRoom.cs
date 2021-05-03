@@ -8,14 +8,8 @@ using UnityEngine.UI;
 
 public class PhotonManager_WaitingRoom : MonoBehaviourPunCallbacks
 {
-    private readonly string gameVersion = "v1.0";
-    private string userId = "Ojui";
-
-    public TMP_InputField userIdText;
-    public TMP_InputField roomNameText;
-
     // 플레이어를 표시할 프리팹
-    public GameObject playerPrefab;
+    public GameObject waitingPlayerPrefab;
     // 플레이어 프리팹을 차일드화 시킬 부모 객체
     public Transform TeamA;
     public Transform TeamB;
@@ -57,18 +51,6 @@ public class PhotonManager_WaitingRoom : MonoBehaviourPunCallbacks
         }
     }
 
-    // public void OnSendClick()
-    // {
-    //     string _msg = $"<color=#00ff00>[{PhotonNetwork.NickName}]</color> {msgIF.text}";
-    //     msgIF.text="";
-    //     pv.RPC("SendChatMessage", RpcTarget.AllBufferedViaServer, _msg);
-    // }
-
-    // [PunRPC]
-    // void SendChatMessage(string msg)
-    // {
-    //     chatListText.text += $"{msg}\n";
-    // }
 
 
 }

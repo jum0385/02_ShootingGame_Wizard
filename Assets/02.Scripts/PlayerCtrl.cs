@@ -54,9 +54,9 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
     private TMP_Text result;
 
-    private bool isGameEnd = false;
 
 
+    public List<Transform> playerPoints = new List<Transform>();
 
 
 
@@ -77,6 +77,14 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // 결과 나타내는 UI
         result = GameObject.FindWithTag("RESULT").GetComponent<TMP_Text>();
         result.enabled = false;
+
+        
+        GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
+        // Debug.Log(pv.ViewID/1000);
+        Vector3 pos = playerPoints[pv.ViewID/1000].position;
+        Quaternion rot = playerPoints[pv.ViewID/1000].rotation;
+        tr.position = pos;
+        tr.rotation = rot;
 
         // player animator \ Apply Root Motion 언체크
 

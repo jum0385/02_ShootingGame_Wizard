@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public delegate void Callback(int winnerLayer);
     public static event Callback Result_handler;
 
+    public List<Transform> playerPoints = new List<Transform>();
+
 
 
     void Awake()
@@ -58,11 +60,16 @@ public class GameManager : MonoBehaviourPunCallbacks
             Destroy(this.gameObject);
         }
 
+        pv = GetComponent<PhotonView>();
 
         //todo 스폰위치
-        Vector3 pos = new Vector3(-17.0f, 0, -58.0f);
+
+        // GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
+        // Debug.Log(pv.ViewID);
+        // Vector3 pos = playerPoints[pv.ViewID].position;
+
         // 플레이어 생성
-        GameObject playerTemp = PhotonNetwork.Instantiate("Player", pos, Quaternion.identity, 0);
+        GameObject playerTemp = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity, 0);
     }
 
 
@@ -83,7 +90,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        pv = GetComponent<PhotonView>();
         playerTr = GameObject.FindGameObjectWithTag("PLAYER")?.GetComponent<Transform>();
         GameObject.Find("SpawnPointGroup").GetComponentsInChildren<Transform>(points);
 
