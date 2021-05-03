@@ -10,7 +10,6 @@ public class RemoveFireball : MonoBehaviour
 
     void OnCollisionEnter(Collision coll)
     {
-        Debug.Log("removeFireBall_Collision");
         ContactPoint cont = coll.GetContact(0);
 
         // 법선 벡터

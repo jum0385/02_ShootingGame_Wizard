@@ -29,6 +29,21 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private GameObject monsterTemp;
 
+    public bool isCheckScore = false;
+    public bool isGameEnd = false;
+
+
+    // [Header("UI - A팀 : B팀")]
+    public TMP_Text teamA_Text;
+    public TMP_Text teamB_Text;
+    private int teamA_score;
+    private int teamB_score;
+
+
+    //델리게이트
+    public delegate void Callback(int winnerLayer);
+    public static event Callback Result_handler;
+
 
 
     void Awake()
@@ -82,6 +97,40 @@ public class GameManager : MonoBehaviourPunCallbacks
         //     StartCoroutine(GetMonsterInPool());
         // }
 
+    }
+
+    void Update()
+    {
+        if (isCheckScore)
+        {
+            StartCoroutine(CheckScore());
+        }
+    }
+
+    IEnumerator CheckScore()
+    {
+        while (!isGameEnd)
+        {
+            teamA_score = int.Parse(teamA_Text.text);
+            teamB_score = int.Parse(teamB_Text.text);
+
+            if ((teamA_score == 0) || (teamB_score == 0))
+            {
+                // 어떤 팀이 이겼는지 확인
+                if (teamA_score == 0)    // B팀이 이김
+                {
+                    Result_handler(11);
+                }
+                else                    // A팀이 이김
+                {
+                    Result_handler(10);
+                }
+
+                isGameEnd = true;
+            }
+            yield return new WaitForSeconds(0.2f);
+
+        }
     }
 
 

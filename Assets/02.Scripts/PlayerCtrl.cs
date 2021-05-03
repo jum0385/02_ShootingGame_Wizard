@@ -46,9 +46,17 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     public Image hpBar;
 
 
-    [Header("UI - A팀 : B팀")]
-    public TMP_Text teamA_Text;
-    public TMP_Text teamB_Text;
+    // [Header("UI - A팀 : B팀")]
+    private TMP_Text teamA_Text;
+    private TMP_Text teamB_Text;
+    private int teamA_score;
+    private int teamB_score;
+
+    private TMP_Text result;
+
+    private bool isGameEnd = false;
+
+
 
 
 
@@ -59,21 +67,25 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
 
         tr = GetComponent<Transform>();
         anim = GetComponent<Animator>();
-
         rigid = GetComponent<Rigidbody>();
-
         pv = GetComponent<PhotonView>();
 
-        // 팀 스코어 초기화
+        // 팀 스코어 UI
         teamA_Text = GameObject.FindWithTag("SCORE_A").GetComponent<TMP_Text>();
         teamB_Text = GameObject.FindWithTag("SCORE_B").GetComponent<TMP_Text>();
+
+        // 결과 나타내는 UI
+        result = GameObject.FindWithTag("RESULT").GetComponent<TMP_Text>();
+        result.enabled = false;
 
         // player animator \ Apply Root Motion 언체크
 
         // 팀 나누기
         pv.RPC("SetTeam", RpcTarget.AllViaServer);
+
+        // 팀 스코어 초기화
         SetRoomInfo();
-        
+
         yield return new WaitForSeconds(0.5f);
 
         // UI에 닉네임 넣기
@@ -81,7 +93,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         {
             userIdText.text = $"<color=#00F4FF>{pv.Owner.NickName}</color>";
         }
-        else if(this.gameObject.layer == LayerMask.NameToLayer("PLAYER_A"))  // A팀이면 분홍색
+        else if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_A"))  // A팀이면 분홍색
         {
             userIdText.text = $"<color=#FF00A6>{pv.Owner.NickName}</color>";
         }
@@ -89,11 +101,15 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         if (pv.IsMine)
         {
             Camera.main.GetComponent<SmoothFollow>().target = transform.Find("CamPivot").transform;
+            //! 델리게이트
+            GameManager.Result_handler += SetResult;
         }
         else
         {
             GetComponent<Rigidbody>().isKinematic = true;
         }
+
+
 
 
         yield return new WaitForSeconds(0.5f);
@@ -111,6 +127,8 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         {
             isJumping = true;
         }
+
+
     }
 
     // 물리적 처리
@@ -195,11 +213,77 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         GetComponent<Rigidbody>().useGravity = false;
         playerDie = true;
 
+        // 팀스코어 감소
+        if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_B"))
+        {
+            teamB_score = int.Parse(teamB_Text.text);
+            teamB_score--;
+            teamB_Text.text = $"{teamB_score}";
+
+            GameManager.instance.isCheckScore = true; //!
+        }
+        else if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_A"))
+        {
+            teamA_score = int.Parse(teamA_Text.text);
+            teamA_score--;
+            teamA_Text.text = $"{teamA_score}";
+
+            GameManager.instance.isCheckScore = true; //!
+        }
+
         // GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
         // foreach (GameObject monster in monsters)
         // {
         //     monster.SendMessage("MonsterWin", SendMessageOptions.DontRequireReceiver);
         // }
+    }
+
+    // 죽었으면 Score확인하는 코루틴 돌리자!    
+    /*
+    [PunRPC]
+    IEnumerator CheckScore()
+    {
+        while (!isGameEnd)
+        {
+            if ((teamA_score == 0) || (teamB_score == 0))
+            {
+                // 어떤 팀이 이겼는지 확인
+                if (teamA_score == 0)    // B팀이 이김
+                {
+                    SetResult(11);
+                }
+                else                    // A팀이 이김
+                {
+                    SetResult(10);
+                }
+
+                isGameEnd = true;
+            }
+            yield return new WaitForSeconds(0.3f);
+
+        }
+        // Debug.Log($"{pv.Owner.NickName} : CheckScore 함수");
+        // // 스코어 확인
+
+    }
+
+*/
+    // UI에 결과 띄우기
+    void SetResult(int winnerLayer)
+    {
+        if (pv.IsMine)
+        {
+            if (gameObject.layer == winnerLayer)
+            {
+                result.text = "YOU WIN!!!";
+            }
+            else
+            {
+                result.text = "YOU LOSE...";
+            }
+        }
+
+        result.enabled = true;
     }
 
 
@@ -231,7 +315,6 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // B팀
         if ((pv.ViewID / 1000) % 2 == 0)
         {
-            Debug.Log("B팀");
             gameObject.layer = 11;
             // int temp = int.Parse(teamB_Text.text);
             // temp ++;
@@ -240,7 +323,6 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
         // A팀
         else
         {
-            Debug.Log("A팀");
             gameObject.layer = 10;
             // int temp = int.Parse(teamA_Text.text);
             // temp ++;

@@ -11,6 +11,7 @@ TagManager:
   - MAGIC_CIRCLE
   - SCORE_A
   - SCORE_B
+  - RESULT
   layers:
   - Default
   - TransparentFX
