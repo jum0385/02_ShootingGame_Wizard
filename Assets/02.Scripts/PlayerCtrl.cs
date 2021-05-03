@@ -38,7 +38,7 @@ public class PlayerCtrl : MonoBehaviour, IPunObservable
     //
 
     private PhotonView pv;
-    public bool playerDie = false;
+    public static bool playerDie = true;
 
 
     [Header("플레이어UI - 닉네임, 체력")]

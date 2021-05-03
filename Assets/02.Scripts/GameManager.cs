@@ -199,7 +199,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             waitText.enabled = false;
             waitingImg.enabled = false;
             startText.enabled = true;
-            Invoke("RemoveStartText", 1.0f);
+
+            PlayerCtrl.playerDie = false;
+            
+            Invoke("RemoveStartText", 2.0f);
         }
     }
 

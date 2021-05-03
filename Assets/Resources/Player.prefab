@@ -4499,7 +4499,6 @@ MonoBehaviour:
   turnSpeed: 0
   initHp: 100
   currHp: 100
-  playerDie: 0
   userIdText: {fileID: 576276682}
   hpBar: {fileID: 8964743784064553441}
   playerPoints: []

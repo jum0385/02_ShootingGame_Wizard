@@ -17,13 +17,11 @@ public class FireCtrl : MonoBehaviour
     private Animator anim;
 
     private PhotonView pv;
-    private PlayerCtrl pCtrl;
 
     void Start()
     {
         audio = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
-        pCtrl = GetComponent<PlayerCtrl>();
 
         pv = GetComponent<PhotonView>();
 
@@ -33,7 +31,7 @@ public class FireCtrl : MonoBehaviour
     {
         if (pv.IsMine)
         {
-            if (Input.GetMouseButtonDown(0) && !pCtrl.playerDie)
+            if (Input.GetMouseButtonDown(0) && !PlayerCtrl.playerDie)
             {
                 pv.RPC("Fire", RpcTarget.AllViaServer);
             }
