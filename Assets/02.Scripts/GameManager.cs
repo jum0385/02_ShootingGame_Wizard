@@ -69,14 +69,14 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         pv = GetComponent<PhotonView>();
 
-        // GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
-        // Debug.Log(pv.ViewID);
-        // Vector3 pos = playerPoints[pv.ViewID].position;
+        GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
+        Vector3 pos = playerPoints[PhotonNetwork.CurrentRoom.PlayerCount - 1].position;
+        Quaternion rot = playerPoints[PhotonNetwork.CurrentRoom.PlayerCount - 1].rotation;
 
         startText.enabled = false;
 
         // 플레이어 생성
-        GameObject playerTemp = PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity, 0);
+        GameObject playerTemp = PhotonNetwork.Instantiate("Player", pos, rot, 0);
     }
 
 
@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             startText.enabled = true;
 
             PlayerCtrl.playerDie = false;
-            
+
             Invoke("RemoveStartText", 2.0f);
         }
     }

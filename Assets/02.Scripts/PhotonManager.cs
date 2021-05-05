@@ -63,7 +63,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 2;
+        ro.MaxPlayers = 4;
 
         roomNameText.text = $"Room_{Random.Range(1, 100):000}";
 
@@ -140,7 +140,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 30;
+        ro.MaxPlayers = 4;
 
         // 인풋필드가 비어있으면
         if (string.IsNullOrEmpty(roomNameText.text))

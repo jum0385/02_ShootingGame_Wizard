@@ -84,11 +84,11 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         result.enabled = false;
 
         // 플레이어 스폰 위치 및 방향
-        GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
-        Vector3 pos = playerPoints[pv.ViewID / 1000].position;
-        Quaternion rot = playerPoints[pv.ViewID / 1000].rotation;
-        tr.position = pos;
-        tr.rotation = rot;
+        // GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
+        // Vector3 pos = playerPoints[pv.ViewID / 1000].position;
+        // Quaternion rot = playerPoints[pv.ViewID / 1000].rotation;
+        // tr.position = pos;
+        // tr.rotation = rot;
 
         // player animator \ Apply Root Motion 언체크
 
@@ -122,6 +122,9 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         GameManager.instance.CheckFullRoom();
+
+
+        Debug.Log($"{pv.Owner.NickName} = Player 스크립트 start()");
 
 
         yield return new WaitForSeconds(0.5f);
@@ -184,7 +187,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         {
             return;
         }
-        Debug.Log("Jump!!");
         // rigid.MovePosition(transform.position + Vector3.up);
         rigid.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
 
