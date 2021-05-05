@@ -231,31 +231,43 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         if (pv.IsMine)
         {
             playerDie = true;
+            // 팀스코어 감소
+            if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_B"))
+            {
+                pv.RPC("UpdateScore", RpcTarget.AllViaServer, 11);
+                // teamB_score = int.Parse(teamB_Text.text);
+                // teamB_score--;
+                // teamB_Text.text = $"{teamB_score}";
+                //!
+            }
+            else if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_A"))
+            {
+                pv.RPC("UpdateScore", RpcTarget.AllViaServer, 10);
+                // teamA_score = int.Parse(teamA_Text.text);
+                // teamA_score--;
+                // teamA_Text.text = $"{teamA_score}";
+            }
         }
 
-        // 팀스코어 감소
-        if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_B"))
+    }
+
+    [PunRPC]
+    void UpdateScore(int playerLayer)
+    {
+        if (playerLayer == 10)  // A팀 팀원이 죽음
         {
+            Debug.Log("빨간색이 죽음");
             teamB_score = int.Parse(teamB_Text.text);
             teamB_score--;
             teamB_Text.text = $"{teamB_score}";
-
-            GameManager.instance.isCheckScore = true; //!
         }
-        else if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_A"))
+        else  // B팀 팀원이 죽음
         {
             teamA_score = int.Parse(teamA_Text.text);
             teamA_score--;
             teamA_Text.text = $"{teamA_score}";
-
-            GameManager.instance.isCheckScore = true; //!
         }
-
-        // GameObject[] monsters = GameObject.FindGameObjectsWithTag("MONSTER");
-        // foreach (GameObject monster in monsters)
-        // {
-        //     monster.SendMessage("MonsterWin", SendMessageOptions.DontRequireReceiver);
-        // }
+        GameManager.instance.isCheckScore = true;
     }
 
     // UI에 결과 띄우기
