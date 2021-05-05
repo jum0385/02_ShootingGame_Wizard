@@ -70,13 +70,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         pv = GetComponent<PhotonView>();
 
         GameObject.Find("PlayerSpawnPointGroup").GetComponentsInChildren<Transform>(playerPoints);
-        Vector3 pos = playerPoints[PhotonNetwork.CurrentRoom.PlayerCount - 1].position;
-        Quaternion rot = playerPoints[PhotonNetwork.CurrentRoom.PlayerCount - 1].rotation;
+        Vector3 pos = playerPoints[PhotonNetwork.CurrentRoom.PlayerCount].position;
+        Quaternion rot = playerPoints[PhotonNetwork.CurrentRoom.PlayerCount].rotation;
 
         startText.enabled = false;
 
         // 플레이어 생성
-        GameObject playerTemp = PhotonNetwork.Instantiate("Player", pos, rot, 0);
+        // GameObject playerTemp = PhotonNetwork.Instantiate("Player", pos, rot, 0);
+        GameObject playerTemp = PhotonNetwork.Instantiate("Player", Vector3.one * PhotonNetwork.CurrentRoom.PlayerCount, rot, 0);
     }
 
 
@@ -140,6 +141,8 @@ public class GameManager : MonoBehaviourPunCallbacks
                 }
 
                 isGameEnd = true;
+                yield return new WaitForSeconds(5.0f);
+                ExitRoom();
             }
             yield return new WaitForSeconds(0.2f);
 
@@ -209,6 +212,21 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RemoveStartText()
     {
         startText.enabled = false;
+    }
+
+
+    // 클론을 지우는 등 cleanUp 작업
+    public void ExitRoom()
+    {
+        PhotonNetwork.LeaveRoom();
+    }
+
+    // CleanUp 끝난 후에 호출되는 콜백
+    // 이미 로비에 있는 상태이므로 씬만 바꿔주면 됨
+    public override void OnLeftRoom()
+    {
+        // Lobby 씬으로 되돌아 가기...
+        SceneManager.LoadScene("Lobby");
     }
 
 

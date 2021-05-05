@@ -65,6 +65,8 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
 
 
+
+
     IEnumerator Start()
     {
         turnSpeed = 0.0f;
@@ -225,7 +227,11 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
 
         GetComponent<CapsuleCollider>().enabled = false;
         GetComponent<Rigidbody>().useGravity = false;
-        playerDie = true;
+
+        if (pv.IsMine)
+        {
+            playerDie = true;
+        }
 
         // 팀스코어 감소
         if (this.gameObject.layer == LayerMask.NameToLayer("PLAYER_B"))
@@ -268,11 +274,6 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         }
 
         result.enabled = true;
-        if (pv.IsMine)
-        {
-            // 5초후 로비로 나가기
-            Invoke("ExitRoom", 5.0f);
-        }
     }
 
 
@@ -336,20 +337,7 @@ public class PlayerCtrl : MonoBehaviourPunCallbacks, IPunObservable
         // connectInfoText.text = $"{currentRoom.PlayerCount}/{currentRoom.MaxPlayers}";
     }
 
-    // 클론을 지우는 등 cleanUp 작업
-    public void ExitRoom()
-    {
-        // PhotonNetwork.LeaveRoom();
-        SceneManager.LoadScene("Lobby");
-    }
 
-    // // CleanUp 끝난 후에 호출되는 콜백
-    // // 이미 로비에 있는 상태이므로 씬만 바꿔주면 됨
-    // public override void OnLeftRoom()
-    // {
-    //     // Lobby 씬으로 되돌아 가기...
-    //     SceneManager.LoadScene("Lobby");
-    // }
 
 
 

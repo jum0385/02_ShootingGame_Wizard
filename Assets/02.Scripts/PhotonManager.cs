@@ -21,6 +21,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     // Room 프리팹이 차일드화 시킬 부모 객체
     public Transform scrollContent;
 
+    public int maxPlayer = 2;
+
 
     private void Awake()
     {
@@ -63,7 +65,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 4;
+        ro.MaxPlayers = (byte)maxPlayer;
 
         roomNameText.text = $"Room_{Random.Range(1, 100):000}";
 
@@ -140,7 +142,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         RoomOptions ro = new RoomOptions();
         ro.IsOpen = true;
         ro.IsVisible = true;
-        ro.MaxPlayers = 4;
+        ro.MaxPlayers = (byte)maxPlayer;
 
         // 인풋필드가 비어있으면
         if (string.IsNullOrEmpty(roomNameText.text))
